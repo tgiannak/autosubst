@@ -23,7 +23,7 @@ Arguments mmap {A B _} f !s /.
 Class MMapExt (A B : Type) `{MMap A B} := 
   mmap_ext : forall f g,
     (forall t, f t = g t) -> forall s, mmap f s = mmap g s.
-Arguments mmap_ext {A B _ _ f g} H s.
+Arguments mmap_ext {A B H' _ f g} H s : rename.
 
 Class MMapLemmas (A B : Type) `{MMap A B} := {
   mmap_id x : mmap id x = x;
@@ -123,6 +123,7 @@ Tactic Notation "msimpl" "in" "*" := (in_all msimplH); msimpl.
 
 Ltac derive_MMap :=
   hnf; match goal with [ |- (?A -> ?A) -> ?B -> ?B ] =>
+    let map := fresh "map" in
     intros f; fix map 1; intros xs; change (annot B xs); destruct xs;
     match goal with
       | [ |- annot _ ?ys ] =>
